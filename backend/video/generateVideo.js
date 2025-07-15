@@ -43,9 +43,11 @@ app.get('/health', (req, res) => {
 app.post('/api/generate/video', async (req, res) => {
   try {
     const { script, audioUrl, presenterId, photoUrl } = req.body;
+    console.log('[VIDEO API] Received request:', { script, audioUrl, presenterId, photoUrl });
 
     // Validate required inputs
     if (!script || !audioUrl) {
+      console.error('[VIDEO API] Missing required fields', { script, audioUrl });
       return res.status(400).json({
         success: false,
         error: {
@@ -57,6 +59,7 @@ app.post('/api/generate/video', async (req, res) => {
 
     // Validate script length (D-ID has limits)
     if (script.length > 1000) {
+      console.error('[VIDEO API] Script too long', { scriptLength: script.length });
       return res.status(400).json({
         success: false,
         error: {
@@ -68,6 +71,7 @@ app.post('/api/generate/video', async (req, res) => {
 
     // Validate audioUrl format
     if (!audioUrl.startsWith('http')) {
+      console.error('[VIDEO API] Invalid audioUrl', { audioUrl });
       return res.status(400).json({
         success: false,
         error: {
@@ -80,18 +84,21 @@ app.post('/api/generate/video', async (req, res) => {
     // Determine which presenter image to use
     let effectivePresenterId = presenterId;
     if (photoUrl && typeof photoUrl === 'string' && photoUrl.length > 0) {
-      // If photoUrl is a relative path, convert to absolute/public URL
       if (photoUrl.startsWith('/')) {
-        // Assume running behind a proxy or on Vercel, so use the public URL
         const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
         const protocol = req.headers['x-forwarded-proto'] || (host.includes('localhost') ? 'http' : 'https');
         effectivePresenterId = `${protocol}://${host}${photoUrl}`;
+        console.log('[VIDEO API] Resolved photoUrl to absolute URL:', effectivePresenterId);
       } else {
         effectivePresenterId = photoUrl;
+        console.log('[VIDEO API] Using provided photoUrl as presenter:', effectivePresenterId);
       }
+    } else {
+      console.log('[VIDEO API] Using default presenterId:', effectivePresenterId);
     }
 
     if (!didService) {
+      console.error('[VIDEO API] D-ID service not initialized');
       return res.status(500).json({
         success: false,
         error: {
@@ -101,11 +108,10 @@ app.post('/api/generate/video', async (req, res) => {
       });
     }
 
-    console.log('Received video generation request:', {
-      scriptLength: script.length,
-      audioUrl: audioUrl.substring(0, 50) + '...',
-      presenterId: effectivePresenterId || 'default',
-      timestamp: new Date().toISOString()
+    console.log('[VIDEO API] Calling didService.generateVideo with:', {
+      audioUrl,
+      script,
+      presenterId: effectivePresenterId
     });
 
     // Generate video using D-ID service
@@ -116,9 +122,10 @@ app.post('/api/generate/video', async (req, res) => {
     });
 
     if (result.success) {
-      console.log('Video generation successful:', {
+      console.log('[VIDEO API] Video generation successful:', {
         taskId: result.data.taskId,
-        duration: result.data.duration
+        duration: result.data.duration,
+        videoUrl: result.data.videoUrl
       });
 
       res.json({
@@ -134,7 +141,7 @@ app.post('/api/generate/video', async (req, res) => {
         metadata: result.metadata
       });
     } else {
-      console.error('Video generation failed:', result.error);
+      console.error('[VIDEO API] Video generation failed:', result.error);
       
       const statusCode = result.error.code?.includes('401') ? 401 :
                         result.error.code?.includes('402') ? 402 :
@@ -147,13 +154,13 @@ app.post('/api/generate/video', async (req, res) => {
     }
 
   } catch (error) {
-    console.error('Unexpected error in video generation endpoint:', error);
-    
+    console.error('[VIDEO API] Unexpected error in video generation endpoint:', error);
     res.status(500).json({
       success: false,
       error: {
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'An unexpected error occurred during video generation'
+        message: 'An unexpected error occurred during video generation',
+        details: error instanceof Error ? error.message : String(error)
       }
     });
   }
