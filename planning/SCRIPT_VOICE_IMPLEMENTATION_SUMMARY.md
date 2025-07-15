@@ -22,30 +22,35 @@ A complete **GPT + ElevenLabs voice integration** system that:
 
 ```
 ├── .env                                    # API key configuration
-├── package.json                           # Dependencies & scripts
 ├── README.md                              # Setup instructions
 ├── backend/
 │   └── audio/
 │       ├── generateScriptAndAudio.js      # Main entry point
+│       ├── package.json                   # Dependencies & scripts
+│       ├── package-lock.json             # Dependency lock file
 │       ├── services/
 │       │   ├── gpt4oService.js           # OpenAI GPT-4o integration
 │       │   └── elevenlabsService.js      # ElevenLabs TTS service
 │       └── utils/
 │           └── audioProcessor.js          # File handling & timestamps
+├── planning/
+│   └── SCRIPT_VOICE_IMPLEMENTATION_SUMMARY.md  # This summary
 └── public/
     └── 2025-07-15_205948.mp3             # Example generated audio file
 ```
 
 ## Usage
 
-1. **Add API keys to .env:**
+1. **Add API keys to .env (in root directory):**
    ```env
    OPENAI_API_KEY=sk-your-actual-key
    ELEVENLABS_API_KEY=your-actual-key  
    ```
 
-2. **Run audio generation:**
+2. **Install dependencies and run audio generation:**
    ```bash
+   cd backend/audio
+   npm install
    npm start
    ```
 

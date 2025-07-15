@@ -6,12 +6,13 @@ GPT + ElevenLabs voice integration for AI Avatar MVP.
 
 1. **Install dependencies:**
    ```bash
+   cd backend/audio
    npm install
    ```
 
 2. **Configure API keys:**
    
-   Update `.env` with your actual API keys:
+   Update `.env` (in root directory) with your actual API keys:
    ```env
    OPENAI_API_KEY=sk-your-actual-openai-key-here
    ELEVENLABS_API_KEY=your-actual-elevenlabs-key-here
@@ -20,6 +21,7 @@ GPT + ElevenLabs voice integration for AI Avatar MVP.
 
 3. **Run the audio generator:**
    ```bash
+   cd backend/audio
    npm start
    ```
 
@@ -36,12 +38,16 @@ GPT + ElevenLabs voice integration for AI Avatar MVP.
 backend/
 ├── audio/
 │   ├── generateScriptAndAudio.js    # Main entry point
+│   ├── package.json                 # Dependencies
+│   ├── package-lock.json           # Dependency lock file
 │   ├── services/
 │   │   ├── gpt4oService.js         # OpenAI GPT-4o integration
 │   │   └── elevenlabsService.js    # ElevenLabs TTS integration  
 │   └── utils/
 │       └── audioProcessor.js       # Audio file handling
 public/                             # Generated audio files
+planning/
+└── SCRIPT_VOICE_IMPLEMENTATION_SUMMARY.md  # Implementation details
 ```
 
 ## Success Criteria

@@ -5,8 +5,8 @@ import { GPT4oService } from './services/gpt4oService.js';
 import { ElevenLabsService } from './services/elevenlabsService.js';
 import { AudioProcessor } from './utils/audioProcessor.js';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from root directory
+dotenv.config({ path: '../../.env' });
 
 class AudioGenerator {
   constructor() {
@@ -22,7 +22,7 @@ class AudioGenerator {
       process.env.DEFAULT_VOICE_ID
     );
     
-    this.audioProcessor = new AudioProcessor('public');
+    this.audioProcessor = new AudioProcessor('../../public');
   }
 
   validateEnvironment() {
