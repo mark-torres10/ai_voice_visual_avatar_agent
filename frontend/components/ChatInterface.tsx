@@ -69,6 +69,11 @@ export default function ChatInterface() {
   };
 
   function playAudio(audioBase64: string, idx: number) {
+    if (!audioBase64 || typeof audioBase64 !== 'string') {
+      console.error('Invalid audio base64 data provided');
+      return;
+    }
+
     if (audioRef.current) {
       audioRef.current.src = `data:audio/mp3;base64,${audioBase64}`;
       audioRef.current.play();
