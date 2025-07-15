@@ -1,0 +1,30 @@
+{
+  "name": "ai-avatar-backend",
+  "version": "1.0.0",
+  "description": "Backend services for AI Avatar MVP",
+  "main": "generateVideo.js",
+  "type": "module",
+  "scripts": {
+    "start": "node generateVideo.js",
+    "dev": "node --watch generateVideo.js",
+    "test": "node --test **/__tests__/*.test.js",
+    "test-did": "node testDidService.js",
+    "install-deps": "npm install"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.2",
+    "form-data": "^4.0.0",
+    "crypto": "^1.0.1",
+    "path": "^0.12.7",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["d-id", "avatar", "video", "ai"],
+  "author": "AI Avatar Team",
+  "license": "MIT"
+}

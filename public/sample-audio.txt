@@ -1,0 +1,38 @@
+# Sample Audio Assets
+
+This directory is for storing audio assets that can be used with the D-ID avatar video generation.
+
+## Usage
+
+1. Place your audio files (MP3, WAV) in this directory
+2. Serve them via a web server to make them publicly accessible
+3. Use the public URLs in your video generation requests
+
+## Example
+
+If you place a file named `welcome.mp3` in this directory and serve it via:
+- Express static middleware: `http://localhost:3001/welcome.mp3`
+- Or upload to a CDN/cloud storage for production use
+
+## Supported Formats
+
+- MP3 (recommended)
+- WAV
+- M4A
+- AAC
+
+## Requirements
+
+- Audio files must be publicly accessible via HTTP/HTTPS
+- Recommended duration: 5-60 seconds
+- Quality: 16kHz, mono or stereo
+
+## Example Audio URLs for Testing
+
+These are publicly available test audio files you can use:
+
+```
+https://d-id-public-bucket.s3.amazonaws.com/sample_audio.wav
+```
+
+Replace with your own audio files for production use.
