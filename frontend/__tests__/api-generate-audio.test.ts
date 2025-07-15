@@ -22,11 +22,14 @@ jest.mock('openai', () => {
   };
 });
 
+let shouldFailTTS = false;
 global.fetch = jest.fn().mockImplementation((url, options) => {
-  if (options && options.body && options.body.includes('fail-tts')) {
+  if (shouldFailTTS) {
+    shouldFailTTS = false;
     return Promise.resolve({
       ok: false,
       text: () => Promise.resolve('TTS error'),
+      arrayBuffer: () => { throw new Error('arrayBuffer should not be called on error'); },
     });
   }
   // Simulate success: return a fake audio buffer
@@ -63,6 +66,7 @@ describe('/api/generate/audio (serverless)', () => {
   });
 
   it('returns 500 if ElevenLabs fails', async () => {
+    shouldFailTTS = true;
     const req = {
       json: async () => ({ userMessage: 'fail-tts' }),
     } as unknown as NextRequest;

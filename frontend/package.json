@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "test": "jest"
+    "test": "OPENAI_API_KEY=dummy ELEVENLABS_API_KEY=dummy jest"
   },
   "dependencies": {
     "@types/next": "^8.0.7",

@@ -20,6 +20,7 @@ export interface Message {
   text: string;
   timestamp: Date;
   type: 'user' | 'system';
+  audioBase64?: string;
 }
 
 export interface ApiError {

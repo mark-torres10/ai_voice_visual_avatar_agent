@@ -131,6 +131,7 @@ export async function POST(req: NextRequest) {
           { status: 500 }
         );
       }
+      // Only call arrayBuffer if ok is true
       const audioBuffer = Buffer.from(await elevenlabsRes.arrayBuffer());
       audioBase64 = audioBuffer.toString('base64');
       console.log(

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import InputArea from './InputArea';
 import { generateAudio } from '../lib/api';
 
@@ -9,7 +9,7 @@ interface Message {
   text: string;
   timestamp: Date;
   type: 'user' | 'system';
-  audioUrl?: string;
+  audioBase64?: string; // <-- add this
 }
 
 export default function ChatInterface() {
@@ -23,39 +23,42 @@ export default function ChatInterface() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
   const [currentAudioBase64, setCurrentAudioBase64] = useState<string | null>(
     null
   );
+  const [activeMessageIdx, setActiveMessageIdx] = useState<number | null>(null); // for highlighting
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleSendMessage = async (messageText: string) => {
     setError(null);
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: messageText,
       timestamp: new Date(),
       type: 'user',
     };
-
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
-
     try {
       const data = await generateAudio(messageText);
-      // Add system message with script and audio
       const systemMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: data.script,
         timestamp: new Date(),
         type: 'system',
-        audioUrl: data.audioUrl, // legacy
+        audioBase64: data.audioBase64 || undefined,
       };
       setMessages((prev) => [...prev, systemMessage]);
       if (data.audioBase64) {
         setCurrentAudioBase64(data.audioBase64);
-      } else if (data.audioUrl) {
-        setCurrentAudioUrl(data.audioUrl);
+        setActiveMessageIdx((prev) =>
+          prev === null ? messages.length : prev + 2
+        ); // auto-highlight last
+        setTimeout(() => {
+          if (typeof data.audioBase64 === 'string') {
+            playAudio(data.audioBase64, messages.length);
+          }
+        }, 0);
       }
     } catch (err: unknown) {
       console.error('Error generating audio:', err);
@@ -65,6 +68,15 @@ export default function ChatInterface() {
     }
   };
 
+  function playAudio(audioBase64: string, idx: number) {
+    if (audioRef.current) {
+      audioRef.current.src = `data:audio/mp3;base64,${audioBase64}`;
+      audioRef.current.play();
+      setActiveMessageIdx(idx);
+      setCurrentAudioBase64(audioBase64);
+    }
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
       {/* Audio Player Section */}
@@ -72,36 +84,42 @@ export default function ChatInterface() {
         <h3 className="text-lg font-semibold text-gray-800 mb-4">
           AI Avatar Audio
         </h3>
-        {currentAudioBase64 ? (
-          <audio
-            src={`data:audio/mp3;base64,${currentAudioBase64}`}
-            controls
-            className="w-full"
-            autoPlay
-          />
-        ) : currentAudioUrl ? (
-          <audio src={currentAudioUrl} controls className="w-full" autoPlay />
-        ) : (
+        <audio
+          ref={audioRef}
+          controls
+          className="w-full"
+          style={{ display: currentAudioBase64 ? undefined : 'none' }}
+          data-testid="audio-player"
+        />
+        {!currentAudioBase64 && (
           <div className="text-gray-500 text-sm">
             Audio will appear here after you send a message.
           </div>
         )}
       </div>
-
       {/* Chat Messages */}
       <div className="space-y-4 max-h-96 overflow-y-auto">
         <h3 className="text-lg font-semibold text-gray-800">Conversation</h3>
-        {messages.map((message) => (
+        {messages.map((message, idx) => (
           <div
             key={message.id}
-            className={`p-3 rounded-lg ${
-              message.type === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
+            className={`p-3 rounded-lg cursor-pointer transition-colors duration-150 ${
+              message.type === 'user'
+                ? 'bg-blue-100 ml-8'
+                : `bg-gray-100 mr-8 ${activeMessageIdx === idx ? 'ring-2 ring-indigo-400' : ''}`
             }`}
+            onClick={() => {
+              if (message.type === 'system' && message.audioBase64) {
+                playAudio(message.audioBase64, idx);
+              }
+            }}
           >
-            <p className="text-gray-800">{message.text}</p>
-            {message.audioUrl && (
-              <audio src={message.audioUrl} controls className="mt-2 w-full" />
-            )}
+            <p className="text-gray-800 flex items-center">
+              {message.text}
+              {message.type === 'system' && message.audioBase64 && (
+                <span className="ml-2 text-indigo-400">▶️</span>
+              )}
+            </p>
             <p className="text-xs text-gray-500 mt-1">
               {message.timestamp.toLocaleTimeString()}
             </p>
@@ -121,7 +139,6 @@ export default function ChatInterface() {
           </div>
         )}
       </div>
-
       {/* Input Area */}
       <InputArea onSendMessage={handleSendMessage} disabled={isLoading} />
     </div>
