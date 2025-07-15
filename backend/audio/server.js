@@ -4,6 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { AudioGenerator } from './generateScriptAndAudio.js';
 
+console.log('[BACKEND] server.js loaded');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -19,53 +21,65 @@ app.use(express.json());
 const publicDir = path.resolve(__dirname, '../../public');
 app.use('/audio', express.static(publicDir));
 
-// POST /api/generate/audio
 app.post('/api/generate/audio', async (req, res) => {
-  const { userMessage } = req.body;
-  console.log('--- [AUDIO API] New request received ---');
-  console.log(`[AUDIO API] userMessage: ${userMessage}`);
-  if (!userMessage || typeof userMessage !== 'string' || userMessage.length < 1 || userMessage.length > 500) {
-    console.log('[AUDIO API] Invalid userMessage');
-    return res.status(400).json({ error: 'Invalid userMessage' });
-  }
+  console.log('--- [BACKEND API] New request received ---');
   try {
+    const { userMessage } = req.body;
+    console.log(`[BACKEND API] userMessage: ${userMessage}`);
+    if (!userMessage || typeof userMessage !== 'string' || userMessage.length < 1 || userMessage.length > 500) {
+      console.error('[BACKEND API] Invalid userMessage');
+      return res.status(400).json({ error: 'Invalid userMessage' });
+    }
+    // Check environment variables
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('[BACKEND API] Missing OPENAI_API_KEY');
+      return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
+    }
+    if (!process.env.ELEVENLABS_API_KEY) {
+      console.error('[BACKEND API] Missing ELEVENLABS_API_KEY');
+      return res.status(500).json({ error: 'Missing ELEVENLABS_API_KEY' });
+    }
     const generator = new AudioGenerator();
-    console.log('[AUDIO API] Step 1: Generating script with GPT-4o...');
+    console.log('[BACKEND API] Step 1: Generating script with GPT-4o...');
     let script, audioResult;
     try {
       const scriptResult = await generator.gptService.generateScript(userMessage);
       script = scriptResult;
-      console.log(`[AUDIO API] Step 1 COMPLETE: Script generated: "${script}"`);
+      console.log(`[BACKEND API] Step 1 COMPLETE: Script generated: "${script}"`);
     } catch (err) {
-      console.error('[AUDIO API] Step 1 ERROR: GPT-4o script generation failed:', err.message);
+      console.error('[BACKEND API] Step 1 ERROR: GPT-4o script generation failed:', err.message, err.stack);
       return res.status(500).json({ error: 'Script generation failed', details: err.message });
     }
-    console.log('[AUDIO API] Step 2: Generating audio with ElevenLabs...');
+    console.log('[BACKEND API] Step 2: Generating audio with ElevenLabs...');
     try {
       const audioBuffer = await generator.elevenLabsService.generateAudio(script);
       audioResult = await generator.audioProcessor.saveAudioBuffer(audioBuffer);
-      console.log(`[AUDIO API] Step 2 COMPLETE: Audio saved as ${audioResult.filename} (${audioResult.size} bytes)`);
+      console.log(`[BACKEND API] Step 2 COMPLETE: Audio saved as ${audioResult.filename} (${audioResult.size} bytes)`);
     } catch (err) {
-      console.error('[AUDIO API] Step 2 ERROR: ElevenLabs audio generation failed:', err.message);
+      console.error('[BACKEND API] Step 2 ERROR: ElevenLabs audio generation failed:', err.message, err.stack);
       return res.status(500).json({ error: 'Audio generation failed', details: err.message });
     }
     // Estimate duration
     const estimatedDuration = await generator.audioProcessor.getAudioDuration(Buffer.alloc(audioResult.size));
     const audioUrl = `/audio/${audioResult.filename}`;
-    console.log('[AUDIO API] Step 3: Sending response to client.');
+    console.log('[BACKEND API] Step 3: Sending response to client.');
     res.json({
       script,
       audioUrl,
       duration: estimatedDuration,
       generationTime: null,
     });
-    console.log('--- [AUDIO API] Request complete ---');
+    console.log('--- [BACKEND API] Request complete ---');
   } catch (error) {
-    console.error('[AUDIO API] UNEXPECTED ERROR:', error.message);
+    console.error('[BACKEND API] UNEXPECTED ERROR:', error.message, error.stack);
     res.status(500).json({ error: error.message || 'Audio generation failed' });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`🎤 Audio API server running at http://localhost:${PORT}`);
+  console.log(`[BACKEND] Audio API server running at http://localhost:${PORT}`);
+  const openaiKey = process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.slice(0, 6) + '...' : 'MISSING';
+  const elevenlabsKey = process.env.ELEVENLABS_API_KEY ? process.env.ELEVENLABS_API_KEY.slice(0, 6) + '...' : 'MISSING';
+  console.log(`[BACKEND] OPENAI_API_KEY present: ${!!process.env.OPENAI_API_KEY} (${openaiKey})`);
+  console.log(`[BACKEND] ELEVENLABS_API_KEY present: ${!!process.env.ELEVENLABS_API_KEY} (${elevenlabsKey})`);
 }); 

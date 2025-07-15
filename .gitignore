@@ -9,3 +9,4 @@ build/
 
 # Next.js build folder (if using TypeScript with Next.js)
 .next/
+.vercel
