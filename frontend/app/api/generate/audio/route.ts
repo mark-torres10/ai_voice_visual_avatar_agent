@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
+import { put } from '@vercel/blob';
 
 console.log('[SERVERLESS AUDIO API] /api/generate/audio route loaded');
 
@@ -61,6 +62,13 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('[SERVERLESS AUDIO API] Missing BLOB_READ_WRITE_TOKEN');
+      return NextResponse.json(
+        { error: 'Missing BLOB_READ_WRITE_TOKEN' },
+        { status: 500 }
+      );
+    }
 
     // Step 1: Generate script with GPT-4o
     let script;
@@ -102,7 +110,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Step 2: Generate audio with ElevenLabs
-    let audioBase64;
+    let audioBase64, audioBuffer, audioUrl;
     try {
       const elevenlabsRes = await fetch(
         `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_CONFIG.voiceId}`,
@@ -131,11 +139,20 @@ export async function POST(req: NextRequest) {
           { status: 500 }
         );
       }
-      // Only call arrayBuffer if ok is true
-      const audioBuffer = Buffer.from(await elevenlabsRes.arrayBuffer());
+      audioBuffer = Buffer.from(await elevenlabsRes.arrayBuffer());
       audioBase64 = audioBuffer.toString('base64');
+
+      // --- Vercel Blob Upload ---
+      const fileName = `audio_${Date.now()}.mp3`;
+      const { url } = await put(fileName, audioBuffer, {
+        access: 'public',
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
+      audioUrl = url;
+      // --- End Vercel Blob Upload ---
+
       console.log(
-        `[SERVERLESS AUDIO API] Step 2 COMPLETE: Audio generated, size: ${audioBuffer.length} bytes`
+        `[SERVERLESS AUDIO API] Step 2 COMPLETE: Audio generated, size: ${audioBuffer.length} bytes, url: ${audioUrl}`
       );
     } catch (err: unknown) {
       console.error(
@@ -152,13 +169,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Step 3: Respond with script and audioBase64
+    // Step 3: Respond with script, audioBase64, and audioUrl
     console.log('[SERVERLESS AUDIO API] Step 3: Sending response to client.');
     return NextResponse.json({
       script,
       audioBase64,
+      audioUrl,
     });
-  } catch (err: unknown) {
+  } catch (err) {
     console.error(
       '[SERVERLESS AUDIO API] UNEXPECTED ERROR:',
       err instanceof Error ? err.message : String(err),

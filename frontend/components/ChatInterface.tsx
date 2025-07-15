@@ -82,7 +82,6 @@ export default function ChatInterface() {
           );
           setVideoUrl(video.videoUrl);
         } catch (err: unknown) {
-          console.error('Error generating video:', err);
           setVideoError(
             err instanceof Error ? err.message : 'Failed to generate video'
           );
