@@ -24,6 +24,9 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
+  const [currentAudioBase64, setCurrentAudioBase64] = useState<string | null>(
+    null
+  );
 
   const handleSendMessage = async (messageText: string) => {
     setError(null);
@@ -46,10 +49,14 @@ export default function ChatInterface() {
         text: data.script,
         timestamp: new Date(),
         type: 'system',
-        audioUrl: data.audioUrl,
+        audioUrl: data.audioUrl, // legacy
       };
       setMessages((prev) => [...prev, systemMessage]);
-      setCurrentAudioUrl(data.audioUrl);
+      if (data.audioBase64) {
+        setCurrentAudioBase64(data.audioBase64);
+      } else if (data.audioUrl) {
+        setCurrentAudioUrl(data.audioUrl);
+      }
     } catch (err: unknown) {
       console.error('Error generating audio:', err);
       setError('Failed to generate audio. Please try again.');
@@ -65,7 +72,14 @@ export default function ChatInterface() {
         <h3 className="text-lg font-semibold text-gray-800 mb-4">
           AI Avatar Audio
         </h3>
-        {currentAudioUrl ? (
+        {currentAudioBase64 ? (
+          <audio
+            src={`data:audio/mp3;base64,${currentAudioBase64}`}
+            controls
+            className="w-full"
+            autoPlay
+          />
+        ) : currentAudioUrl ? (
           <audio src={currentAudioUrl} controls className="w-full" autoPlay />
         ) : (
           <div className="text-gray-500 text-sm">

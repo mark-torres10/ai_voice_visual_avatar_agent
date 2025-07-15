@@ -35,7 +35,8 @@ export interface AudioGenerationRequest {
 
 export interface AudioGenerationResponse {
   script: string;
-  audioUrl: string;
+  audioUrl?: string;
+  audioBase64?: string;
   duration?: number;
   voiceId?: string;
   generationTime?: number;
