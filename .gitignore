@@ -1,2 +1,11 @@
 *.env
 node_modules
+# TypeScript build output directories
+dist/
+build/
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Next.js build folder (if using TypeScript with Next.js)
+.next/
