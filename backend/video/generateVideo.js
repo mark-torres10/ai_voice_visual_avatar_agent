@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import DidService from './video/services/didService.js';
+import DidService from './services/didService.js';
 
 // Load environment variables
 dotenv.config();

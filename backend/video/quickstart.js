@@ -87,7 +87,7 @@ async function testService() {
   
   try {
     // Import and test the service
-    const { default: DidService } = await import('./video/services/didService.js');
+    const { default: DidService } = await import('./services/didService.js');
     
     const didService = new DidService();
     console.log('✅ D-ID Service initialized successfully');

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import dotenv from 'dotenv';
-import DidService from './video/services/didService.js';
+import DidService from './services/didService.js';
 
 // Load environment variables
 dotenv.config();
