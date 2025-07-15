@@ -1,0 +1,1 @@
+This is mock MP3 audio data for testing purposes. In a real scenario, this would be actual audio bytes from ElevenLabs. This buffer simulates what would be received from the TTS API. The audio processor will save this with a timestamp filename. Real audio files would be much larger, typically several KB to MB.
