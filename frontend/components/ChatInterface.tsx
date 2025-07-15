@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import InputArea from './InputArea';
-import VideoPlayer from './VideoPlayer';
 import { generateAudio } from '../lib/api';
 
 interface Message {
@@ -51,7 +50,8 @@ export default function ChatInterface() {
       };
       setMessages((prev) => [...prev, systemMessage]);
       setCurrentAudioUrl(data.audioUrl);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      console.error('Error generating audio:', err);
       setError('Failed to generate audio. Please try again.');
     } finally {
       setIsLoading(false);
@@ -68,7 +68,9 @@ export default function ChatInterface() {
         {currentAudioUrl ? (
           <audio src={currentAudioUrl} controls className="w-full" autoPlay />
         ) : (
-          <div className="text-gray-500 text-sm">Audio will appear here after you send a message.</div>
+          <div className="text-gray-500 text-sm">
+            Audio will appear here after you send a message.
+          </div>
         )}
       </div>
 
