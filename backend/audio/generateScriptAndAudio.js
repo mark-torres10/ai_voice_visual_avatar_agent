@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 
 import dotenv from 'dotenv';
+import fs from 'fs';
 import { GPT4oService } from './services/gpt4oService.js';
 import { ElevenLabsService } from './services/elevenlabsService.js';
 import { AudioProcessor } from './utils/audioProcessor.js';
 
-// Load environment variables from root directory
-dotenv.config({ path: '../../.env' });
+// Load environment variables from root directory if .env exists (for local dev)
+const envPath = '../../.env';
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+}
+// In production, process.env will be populated by the environment
 
 class AudioGenerator {
   constructor() {

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import ChatInterface from '@/components/ChatInterface';
 
 export default function Home() {
-  const [message, setMessage] = useState('');
+  // Remove or use 'message' and 'setMessage' if not needed
+  // Add a newline at the end of the file
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">

@@ -20,10 +20,25 @@ export interface Message {
   text: string;
   timestamp: Date;
   type: 'user' | 'system';
+  audioBase64?: string;
 }
 
 export interface ApiError {
   message: string;
   status: number;
   details?: string;
+}
+
+// Audio Generation API Types
+export interface AudioGenerationRequest {
+  userMessage: string;
+}
+
+export interface AudioGenerationResponse {
+  script: string;
+  audioUrl?: string;
+  audioBase64?: string;
+  duration?: number;
+  voiceId?: string;
+  generationTime?: number;
 }

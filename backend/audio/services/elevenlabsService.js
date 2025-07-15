@@ -12,11 +12,7 @@ const VOICE_CONFIG = {
 };
 
 export class ElevenLabsService {
-  constructor(apiKey, defaultVoiceId = null) {
-    if (!apiKey || apiKey.length !== 32) {
-      throw new Error('Invalid ElevenLabs API key format');
-    }
-    
+  constructor(apiKey, defaultVoiceId = null) {    
     this.apiKey = apiKey;
     this.baseUrl = 'https://api.elevenlabs.io/v1';
     this.defaultVoiceId = defaultVoiceId || VOICE_CONFIG.voiceId;
