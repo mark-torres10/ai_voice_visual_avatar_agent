@@ -37,7 +37,7 @@ async function createTalkRequest({
   const res = await fetch(`${DID_API_URL}/v1/talks`, {
     method: 'POST',
     headers: {
-      Authorization: `Basic ${D_ID_API_KEY}`,
+      Authorization: `Bearer ${D_ID_API_KEY}`,
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
@@ -56,7 +56,7 @@ async function pollVideoStatus(talkId: string) {
   while (attempts < maxAttempts) {
     const res = await fetch(`${DID_API_URL}/v1/talks/${talkId}`, {
       headers: {
-        Authorization: `Basic ${D_ID_API_KEY}`,
+        Authorization: `Bearer ${D_ID_API_KEY}`,
         Accept: 'application/json',
       },
     });
