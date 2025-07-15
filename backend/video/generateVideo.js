@@ -26,7 +26,7 @@ try {
   console.log('D-ID Service initialized successfully');
 } catch (error) {
   console.error('Failed to initialize D-ID Service:', error.message);
-  console.error('Make sure DID_API_KEY is set in your .env file');
+  console.error('Make sure D_ID_API_KEY is set in your .env file');
 }
 
 // Health check endpoint
@@ -42,7 +42,7 @@ app.get('/health', (req, res) => {
 // Main video generation endpoint
 app.post('/api/generate/video', async (req, res) => {
   try {
-    const { script, audioUrl, presenterId } = req.body;
+    const { script, audioUrl, presenterId, photoUrl } = req.body;
 
     // Validate required inputs
     if (!script || !audioUrl) {
@@ -77,6 +77,20 @@ app.post('/api/generate/video', async (req, res) => {
       });
     }
 
+    // Determine which presenter image to use
+    let effectivePresenterId = presenterId;
+    if (photoUrl && typeof photoUrl === 'string' && photoUrl.length > 0) {
+      // If photoUrl is a relative path, convert to absolute/public URL
+      if (photoUrl.startsWith('/')) {
+        // Assume running behind a proxy or on Vercel, so use the public URL
+        const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+        const protocol = req.headers['x-forwarded-proto'] || (host.includes('localhost') ? 'http' : 'https');
+        effectivePresenterId = `${protocol}://${host}${photoUrl}`;
+      } else {
+        effectivePresenterId = photoUrl;
+      }
+    }
+
     if (!didService) {
       return res.status(500).json({
         success: false,
@@ -90,7 +104,7 @@ app.post('/api/generate/video', async (req, res) => {
     console.log('Received video generation request:', {
       scriptLength: script.length,
       audioUrl: audioUrl.substring(0, 50) + '...',
-      presenterId: presenterId || 'default',
+      presenterId: effectivePresenterId || 'default',
       timestamp: new Date().toISOString()
     });
 
@@ -98,7 +112,7 @@ app.post('/api/generate/video', async (req, res) => {
     const result = await didService.generateVideo({
       audioUrl,
       script,
-      presenterId
+      presenterId: effectivePresenterId
     });
 
     if (result.success) {
@@ -243,8 +257,8 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`👥 Presenters: GET http://localhost:${PORT}/api/presenters`);
     console.log(`🧪 Test endpoint: POST http://localhost:${PORT}/api/test/video`);
     
-    if (!process.env.DID_API_KEY || process.env.DID_API_KEY === 'your_did_api_key_here') {
-      console.warn('⚠️  Warning: DID_API_KEY not configured. Please update your .env file.');
+    if (!process.env.D_ID_API_KEY || process.env.D_ID_API_KEY === 'your_did_api_key_here') {
+      console.warn('⚠️  Warning: D_ID_API_KEY not configured. Please update your .env file.');
     }
   });
 }

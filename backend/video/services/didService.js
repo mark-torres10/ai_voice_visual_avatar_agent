@@ -36,7 +36,7 @@ const PRESENTER_CONFIG = {
 
 class DidService {
   constructor() {
-    this.apiKey = process.env.DID_API_KEY;
+    this.apiKey = process.env.D_ID_API_KEY;
     this.baseUrl = DID_CONFIG.baseUrl;
     
     if (!this.apiKey) {

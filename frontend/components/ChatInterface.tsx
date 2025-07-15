@@ -2,7 +2,8 @@
 
 import { useState, useRef } from 'react';
 import InputArea from './InputArea';
-import { generateAudio } from '../lib/api';
+import VideoPlayer from './VideoPlayer';
+import { generateAudio, generateVideo } from '../lib/api';
 
 interface Message {
   id: string;
@@ -11,6 +12,8 @@ interface Message {
   type: 'user' | 'system';
   audioBase64?: string; // <-- add this
 }
+
+const DEFAULT_PHOTO_URL = '/generic_secretary_stock_image.jpg';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
@@ -27,10 +30,15 @@ export default function ChatInterface() {
     null
   );
   const [activeMessageIdx, setActiveMessageIdx] = useState<number | null>(null); // for highlighting
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleSendMessage = async (messageText: string) => {
     setError(null);
+    setVideoError(null);
+    setVideoUrl(null);
     const userMessage: Message = {
       id: Date.now().toString(),
       text: messageText,
@@ -59,6 +67,21 @@ export default function ChatInterface() {
             playAudio(data.audioBase64, messages.length);
           }
         }, 0);
+      }
+      // Video generation step
+      if (data.script && (data.audioUrl || data.audioBase64)) {
+        setIsVideoLoading(true);
+        try {
+          // Prefer audioUrl if available, else fallback to base64 (not supported by backend yet)
+          const audioUrl = data.audioUrl || '';
+          if (!audioUrl) throw new Error('No audioUrl available for video');
+          const video = await generateVideo(data.script, audioUrl, DEFAULT_PHOTO_URL);
+          setVideoUrl(video.videoUrl);
+        } catch (err: any) {
+          setVideoError(err?.message || 'Failed to generate video');
+        } finally {
+          setIsVideoLoading(false);
+        }
       }
     } catch (err: unknown) {
       console.error('Error generating audio:', err);
@@ -100,6 +123,24 @@ export default function ChatInterface() {
           <div className="text-gray-500 text-sm">
             Audio will appear here after you send a message.
           </div>
+        )}
+      </div>
+      {/* Video Player Section */}
+      <div className="bg-gray-50 rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          AI Avatar Video
+        </h3>
+        {isVideoLoading ? (
+          <div className="flex items-center space-x-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+            <p className="text-gray-600">Generating video...</p>
+          </div>
+        ) : videoError ? (
+          <div className="bg-red-100 text-red-700 p-3 rounded-lg">
+            {videoError}
+          </div>
+        ) : (
+          <VideoPlayer videoUrl={videoUrl} />
         )}
       </div>
       {/* Chat Messages */}
