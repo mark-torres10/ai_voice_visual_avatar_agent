@@ -75,10 +75,17 @@ export default function ChatInterface() {
           // Prefer audioUrl if available, else fallback to base64 (not supported by backend yet)
           const audioUrl = data.audioUrl || '';
           if (!audioUrl) throw new Error('No audioUrl available for video');
-          const video = await generateVideo(data.script, audioUrl, DEFAULT_PHOTO_URL);
+          const video = await generateVideo(
+            data.script,
+            audioUrl,
+            DEFAULT_PHOTO_URL
+          );
           setVideoUrl(video.videoUrl);
-        } catch (err: any) {
-          setVideoError(err?.message || 'Failed to generate video');
+        } catch (err: unknown) {
+          console.error('Error generating video:', err);
+          setVideoError(
+            err instanceof Error ? err.message : 'Failed to generate video'
+          );
         } finally {
           setIsVideoLoading(false);
         }
