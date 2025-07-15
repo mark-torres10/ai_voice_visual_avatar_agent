@@ -27,3 +27,16 @@ export interface ApiError {
   status: number;
   details?: string;
 }
+
+// Audio Generation API Types
+export interface AudioGenerationRequest {
+  userMessage: string;
+}
+
+export interface AudioGenerationResponse {
+  script: string;
+  audioUrl: string;
+  duration?: number;
+  voiceId?: string;
+  generationTime?: number;
+}

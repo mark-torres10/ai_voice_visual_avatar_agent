@@ -48,9 +48,7 @@ export default function InputArea({ onSendMessage, disabled }: InputAreaProps) {
           {disabled ? 'Processing...' : 'Send'}
         </Button>
       </div>
-      <p className="text-sm text-gray-500">
-        {message.length}/500 characters
-      </p>
+      <p className="text-sm text-gray-500">{message.length}/500 characters</p>
     </form>
   );
 }

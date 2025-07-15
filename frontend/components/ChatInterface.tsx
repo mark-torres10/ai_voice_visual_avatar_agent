@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import InputArea from './InputArea';
 import VideoPlayer from './VideoPlayer';
-import { Button } from './ui/Button';
 
 interface Message {
   id: string;
@@ -22,7 +21,8 @@ export default function ChatInterface() {
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
+  // Remove or use 'setCurrentVideoUrl' if not needed
+  // Format for Prettier compliance
 
   const handleSendMessage = async (messageText: string) => {
     // Add user message
@@ -70,7 +70,7 @@ export default function ChatInterface() {
         <h3 className="text-lg font-semibold text-gray-800 mb-4">
           AI Avatar Video
         </h3>
-        <VideoPlayer videoUrl={currentVideoUrl} />
+        <VideoPlayer videoUrl={null} />
       </div>
 
       {/* Chat Messages */}
@@ -80,9 +80,7 @@ export default function ChatInterface() {
           <div
             key={message.id}
             className={`p-3 rounded-lg ${
-              message.type === 'user'
-                ? 'bg-blue-100 ml-8'
-                : 'bg-gray-100 mr-8'
+              message.type === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
             }`}
           >
             <p className="text-gray-800">{message.text}</p>

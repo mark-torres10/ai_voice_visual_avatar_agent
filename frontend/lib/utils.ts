@@ -17,10 +17,10 @@ export function validateMessage(message: string): {
   if (!message.trim()) {
     return { isValid: false, error: 'Message cannot be empty' };
   }
-  
+
   if (message.length > 500) {
     return { isValid: false, error: 'Message too long (max 500 characters)' };
   }
-  
+
   return { isValid: true };
 }
