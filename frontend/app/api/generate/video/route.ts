@@ -34,10 +34,11 @@ async function createTalkRequest({
   console.log('[SERVERLESS VIDEO API] script:', script);
   console.log('[SERVERLESS VIDEO API] presenterUrl:', presenterUrl);
 
+  const encodedKey = Buffer.from(D_ID_API_KEY || '').toString('base64');
   const res = await fetch(`${DID_API_URL}/v1/talks`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${D_ID_API_KEY}`,
+      Authorization: `Basic ${encodedKey}`,
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
@@ -53,10 +54,11 @@ async function createTalkRequest({
 async function pollVideoStatus(talkId: string) {
   const maxAttempts = 60;
   let attempts = 0;
+  const encodedKey = Buffer.from(D_ID_API_KEY || '').toString('base64');
   while (attempts < maxAttempts) {
     const res = await fetch(`${DID_API_URL}/v1/talks/${talkId}`, {
       headers: {
-        Authorization: `Bearer ${D_ID_API_KEY}`,
+        Authorization: `Basic ${encodedKey}`,
         Accept: 'application/json',
       },
     });
