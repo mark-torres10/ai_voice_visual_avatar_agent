@@ -1,0 +1,23 @@
+{
+  "name": "ai-avatar-audio-integration",
+  "version": "1.0.0",
+  "description": "GPT + ElevenLabs voice integration for AI Avatar MVP",
+  "main": "generateScriptAndAudio.js",
+  "type": "module",
+  "scripts": {
+    "start": "node generateScriptAndAudio.js",
+    "test": "echo \"Tests not yet implemented\" && exit 1"
+  },
+  "dependencies": {
+    "openai": "^4.0.0",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^3.0.0",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "keywords": ["ai", "avatar", "tts", "gpt", "elevenlabs"],
+  "author": "",
+  "license": "ISC"
+}
