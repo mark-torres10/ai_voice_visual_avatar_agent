@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { existsSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,13 +42,13 @@ function checkEnvironment() {
       name: 'Environment File',
       test: () => {
         try {
-          return require('fs').existsSync('.env') ? 'Found' : 'Missing';
+          return existsSync('.env') ? 'Found' : 'Missing';
         } catch {
           return 'Missing';
         }
       },
       expected: '.env file exists',
-      status: require('fs').existsSync('.env') ? '✅' : '❌'
+      status: existsSync('.env') ? '✅' : '❌'
     }
   ];
 
