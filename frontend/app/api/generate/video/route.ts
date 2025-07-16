@@ -7,32 +7,20 @@ const DEFAULT_PHOTO_URL =
 
 async function createTalkRequest({
   audioUrl,
-  script,
   presenterUrl,
 }: {
   audioUrl: string;
-  script: string;
   presenterUrl: string;
 }) {
+  // Minimal payload: only required fields
   const requestData = {
     source_url: presenterUrl,
     script: {
       type: 'audio',
       audio_url: audioUrl,
-      reduce_noise: true,
-      ssml: false,
-    },
-    config: {
-      result_format: 'mp4',
-      fluent: true,
-      pad_audio: 0.0,
-      stitch: true,
-      align_driver: true,
-      align_expand_factor: 1.0,
     },
   };
   console.log('[SERVERLESS VIDEO API] audioUrl:', audioUrl);
-  console.log('[SERVERLESS VIDEO API] script:', script);
   console.log('[SERVERLESS VIDEO API] presenterUrl:', presenterUrl);
 
   const encodedKey = Buffer.from(D_ID_API_KEY || '').toString('base64');
@@ -119,12 +107,11 @@ export async function POST(req: NextRequest) {
       photoUrl && typeof photoUrl === 'string' && photoUrl.length > 0
         ? photoUrl
         : DEFAULT_PHOTO_URL;
-    // Remove logic for relative path conversion, as all URLs should be absolute and public
     console.log('[SERVERLESS VIDEO API] Using presenterUrl:', presenterUrl);
-    // Step 1: Create talk request
+    // Step 1: Create talk request (minimal payload)
     let talk;
     try {
-      talk = await createTalkRequest({ audioUrl, script, presenterUrl });
+      talk = await createTalkRequest({ audioUrl, presenterUrl });
       console.log('[SERVERLESS VIDEO API] D-ID talk created:', talk);
     } catch (err) {
       console.error('[SERVERLESS VIDEO API] Error creating D-ID talk:', err);

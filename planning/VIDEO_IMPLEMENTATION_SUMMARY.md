@@ -214,3 +214,10 @@ The D-ID avatar implementation is **production-ready** and can be:
 - ✅ Documentation complete and comprehensive
 
 The implementation is ready for immediate use and integration with the rest of the AI Avatar MVP system!
+
+## [2025-07-16] D-ID Minimal Payload Integration
+
+- [x] Use only minimal required payload for D-ID /talks (source_url, script with type: audio, audio_url)
+- [x] Poll for result and return .mp4 result_url as videoUrl
+- [x] PR opened: [#6](https://github.com/mark-torres10/ai_voice_visual_avatar_agent/pull/6)
+- [ ] Awaiting review/merge
