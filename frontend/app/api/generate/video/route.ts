@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const DID_API_URL = process.env.DID_API_URL || 'https://api.d-id.com';
+const DID_API_URL = 'https://api.d-id.com/talks';
 const D_ID_API_KEY = process.env.D_ID_API_KEY;
 const DEFAULT_PHOTO_URL = '/generic_secretary_stock_image.jpg';
 
@@ -35,7 +35,7 @@ async function createTalkRequest({
   console.log('[SERVERLESS VIDEO API] presenterUrl:', presenterUrl);
 
   const encodedKey = Buffer.from(D_ID_API_KEY || '').toString('base64');
-  const res = await fetch(`${DID_API_URL}/v1/talks`, {
+  const res = await fetch(DID_API_URL, {
     method: 'POST',
     headers: {
       Authorization: `Basic ${encodedKey}`,
@@ -56,7 +56,7 @@ async function pollVideoStatus(talkId: string) {
   let attempts = 0;
   const encodedKey = Buffer.from(D_ID_API_KEY || '').toString('base64');
   while (attempts < maxAttempts) {
-    const res = await fetch(`${DID_API_URL}/v1/talks/${talkId}`, {
+    const res = await fetch(`https://api.d-id.com/talks/${talkId}`, {
       headers: {
         Authorization: `Basic ${encodedKey}`,
         Accept: 'application/json',
