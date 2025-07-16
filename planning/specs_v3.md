@@ -2,6 +2,8 @@
 
 This spec defines the next milestone for the talking avatar MVP: generating a talking-head video using D-ID, given a user photo, a script (text), and an audio file. The user photo is provided as a public asset (e.g., `/public/generic_secretary_stock_image.jpg`), and the backend will use D-ID's API to create a video response.
 
+**[2025-07-16] STATUS:** D-ID minimal payload integration for video generation is complete and a PR is open ([#6](https://github.com/mark-torres10/ai_voice_visual_avatar_agent/pull/6)).
+
 ---
 
 ## 🧩 System Overview
