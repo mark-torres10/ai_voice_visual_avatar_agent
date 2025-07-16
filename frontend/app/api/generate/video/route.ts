@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const DID_API_URL = 'https://api.d-id.com/talks';
 const D_ID_API_KEY = process.env.D_ID_API_KEY;
-const DEFAULT_PHOTO_URL = '/generic_secretary_stock_image.jpg';
+const DEFAULT_PHOTO_URL =
+  'https://mwnlyxrc8lojn1c9.public.blob.vercel-storage.com/generic_secretary_stock_image.jpg';
 
 async function createTalkRequest({
   audioUrl,
@@ -118,17 +119,7 @@ export async function POST(req: NextRequest) {
       photoUrl && typeof photoUrl === 'string' && photoUrl.length > 0
         ? photoUrl
         : DEFAULT_PHOTO_URL;
-    if (presenterUrl.startsWith('/')) {
-      // Convert to absolute URL for Vercel
-      const host =
-        req.headers.get('x-forwarded-host') ||
-        req.headers.get('host') ||
-        'localhost:3000';
-      const protocol =
-        req.headers.get('x-forwarded-proto') ||
-        (host.includes('localhost') ? 'http' : 'https');
-      presenterUrl = `${protocol}://${host}${presenterUrl}`;
-    }
+    // Remove logic for relative path conversion, as all URLs should be absolute and public
     console.log('[SERVERLESS VIDEO API] Using presenterUrl:', presenterUrl);
     // Step 1: Create talk request
     let talk;

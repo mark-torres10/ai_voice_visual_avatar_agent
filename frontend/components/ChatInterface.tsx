@@ -13,7 +13,8 @@ interface Message {
   audioBase64?: string; // <-- add this
 }
 
-const DEFAULT_PHOTO_URL = '/generic_secretary_stock_image.jpg';
+const DEFAULT_PHOTO_URL =
+  'https://mwnlyxrc8lojn1c9.public.blob.vercel-storage.com/generic_secretary_stock_image.jpg';
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
