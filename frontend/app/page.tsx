@@ -15,8 +15,12 @@ export default function Home() {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               AI Avatar MVP
             </h1>
-            <p className="text-lg text-gray-600">
-              Hello World - Chat Interface Coming Soon
+            <p className="text-lg text-gray-600 mb-2">
+              Create a talking AI avatar: type a message, and watch your avatar respond with realistic speech and video.
+              This app demonstrates end-to-end AI media generation, showing the generated script, audio, and video for each message.
+            </p>
+            <p className="text-sm text-gray-500">
+              <strong>Powered by:</strong> GPT (text), ElevenLabs (audio), D-ID (video), Next.js & Vercel (frontend), TypeScript (backend).
             </p>
           </div>
 
