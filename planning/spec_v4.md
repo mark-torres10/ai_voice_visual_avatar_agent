@@ -74,6 +74,36 @@ This single endpoint will handle the entire generation process to simplify the c
   }
   ```
 
+- **`401 Unauthorized`** - Authentication failure (e.g., missing or invalid API key)
+  ```json
+  {
+    "error": {
+      "code": "unauthorized",
+      "message": "Authentication required or invalid credentials."
+    }
+  }
+  ```
+
+- **`403 Forbidden`** - Authorization failure (e.g., insufficient permissions)
+  ```json
+  {
+    "error": {
+      "code": "forbidden",
+      "message": "You do not have permission to access this resource."
+    }
+  }
+  ```
+
+- **`429 Too Many Requests`** - Rate limit exceeded
+  ```json
+  {
+    "error": {
+      "code": "rate_limit_exceeded",
+      "message": "Too many requests. Please try again later."
+    }
+  }
+  ```
+
 - **`500 Internal Server Error`** - Server-side error (e.g., upstream service failure)
   ```json
   {
