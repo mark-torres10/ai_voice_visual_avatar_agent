@@ -55,19 +55,34 @@ This single endpoint will handle the entire generation process to simplify the c
 }
 ```
 
-**Output (Success):**
-```json
-{
-  "videoUrl": "https://path/to/generated/video.mp4"
-}
-```
+**Responses:**
 
-**Output (Error):**
-```json
-{
-  "error": "A description of what went wrong."
-}
-```
+- **`200 OK`** - Success
+  ```json
+  {
+    "videoUrl": "https://path/to/generated/video.mp4"
+  }
+  ```
+
+- **`400 Bad Request`** - Client-side error (e.g., invalid input)
+  ```json
+  {
+    "error": {
+      "code": "invalid_input",
+      "message": "Script cannot be empty."
+    }
+  }
+  ```
+
+- **`500 Internal Server Error`** - Server-side error (e.g., upstream service failure)
+  ```json
+  {
+    "error": {
+      "code": "video_generation_failed",
+      "message": "The video generation service failed to process the request."
+    }
+  }
+  ```
 
 ---
 
