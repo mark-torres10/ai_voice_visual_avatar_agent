@@ -102,9 +102,13 @@ This single endpoint will handle the entire generation process to simplify the c
 
 ### Backend (API Route)
 - [ ] Create a new API route at `/app/api/generate/route.ts`.
+- [ ] Implement authentication and rate limiting to protect the endpoint.
+- [ ] Implement robust input validation and content moderation for the `script` to ensure safe and valid requests.
 - [ ] This route will receive the `script` from the frontend.
 - [ ] It will first call the audio generation service (ElevenLabs).
 - [ ] Upon receiving the audio URL, it will then call the video generation service (D-ID), passing the audio URL and the default photo URL.
+- [ ] Implement a retry/back-off strategy for calls to external services (ElevenLabs, D-ID) to handle throttling and transient errors.
+- [ ] Implement structured logging for requests, responses, and errors, including generation duration and failure rates.
 - [ ] It will return the final `videoUrl` or an error message.
 - [ ] Delete the old, separate API routes for `/api/generate/audio` and `/api/generate/video`.
 
