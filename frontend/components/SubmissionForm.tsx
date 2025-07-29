@@ -26,7 +26,7 @@ export default function SubmissionForm({
         value={script}
         onChange={(e) => setScript(e.target.value)}
         placeholder="Enter your script here..."
-        className="w-full p-2 border rounded"
+        className="w-full p-4 border border-ponte-border rounded-lg bg-ponte-background text-ponte-text placeholder-ponte-textLight focus:outline-none focus:ring-2 focus:ring-ponte-accent focus:border-transparent"
         rows={5}
         disabled={isLoading}
       />
