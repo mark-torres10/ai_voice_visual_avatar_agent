@@ -116,10 +116,10 @@ export default function PersonaCarousel({
                     <div
                       className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium ${
                         persona.availabilityStatus === 'available'
-                          ? 'bg-ponte-accentLight text-ponte-accent'
+                          ? 'bg-green-600 text-white'
                           : persona.availabilityStatus === 'available_soon'
-                            ? 'bg-ponte-yellow/20 text-ponte-yellow'
-                            : 'bg-red-100/20 text-red-400'
+                            ? 'bg-yellow-600 text-white'
+                            : 'bg-red-600 text-white'
                       }`}
                     >
                       {persona.availabilityStatus === 'available'

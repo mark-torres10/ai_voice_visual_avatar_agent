@@ -58,15 +58,15 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-8">
+    <main className="min-h-screen bg-ponte-background py-8">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold text-ponte-text mb-4">
               AI Avatar Generator
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-ponte-textMuted">
               Choose your AI avatar and create personalized videos with
               realistic speech and animation
             </p>
@@ -82,7 +82,7 @@ export default function Home() {
 
           {/* Selected Persona Info */}
           {selectedPersona && (
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="bg-ponte-secondary rounded-lg shadow-md p-6 mb-8 border border-ponte-border">
               <div className="flex items-center space-x-4">
                 <img
                   src={selectedPersona.images[0]}
@@ -94,13 +94,13 @@ export default function Home() {
                   }}
                 />
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
+                  <h3 className="text-lg font-semibold text-ponte-text">
                     {selectedPersona.name}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-ponte-textMuted">
                     {selectedPersona.category} • ⭐ {selectedPersona.rating}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-ponte-textLight">
                     {selectedPersona.description}
                   </p>
                 </div>
@@ -109,7 +109,7 @@ export default function Home() {
           )}
 
           {/* Main Form */}
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="bg-ponte-secondary rounded-lg shadow-md p-8 border border-ponte-border">
             <SubmissionForm
               onSubmission={handleSubmission}
               isLoading={isLoading}
