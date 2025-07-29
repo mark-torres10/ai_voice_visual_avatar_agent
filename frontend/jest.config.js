@@ -1,5 +1,19 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
-  testMatch: ['**/__tests__/**/*.test.ts'],
+  testEnvironment: 'jsdom',
+  testMatch: ['**/__tests__/**/*.test.{ts,tsx}'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+  },
+  globals: {
+    'ts-jest': {
+      tsconfig: {
+        jsx: 'react-jsx',
+      },
+    },
+  },
 };

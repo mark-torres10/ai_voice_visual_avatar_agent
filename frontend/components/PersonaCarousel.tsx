@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { personas, Persona } from '@/lib/personas';
+import PersonaCard from './PersonaCard';
 
 interface PersonaCarouselProps {
   onPersonaSelect?: (persona: Persona) => void;
@@ -87,67 +88,12 @@ export default function PersonaCarousel({
             }}
           >
             {personas.map((persona) => (
-              <div
-                key={persona.id}
-                className="w-full flex-shrink-0 px-4"
-                onClick={() => handlePersonaClick(persona)}
-              >
-                <div
-                  className={`bg-ponte-secondary rounded-lg shadow-lg p-6 cursor-pointer transition-all duration-200 hover:shadow-xl ${
-                    selectedPersonaId === persona.id
-                      ? 'ring-2 ring-ponte-accent shadow-xl'
-                      : ''
-                  }`}
-                >
-                  {/* Persona Image */}
-                  <div className="relative mb-4">
-                    <img
-                      src={persona.images[0]}
-                      alt={persona.name}
-                      className="w-full h-48 object-cover rounded-lg"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/generic_secretary_stock_image.jpg';
-                      }}
-                    />
-                    <div className="absolute top-2 right-2 bg-ponte-backgroundLight rounded-full px-2 py-1 text-sm font-medium text-ponte-yellow">
-                      ⭐ {persona.rating}
-                    </div>
-                    <div
-                      className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium ${
-                        persona.availabilityStatus === 'available'
-                          ? 'bg-green-600 text-white'
-                          : persona.availabilityStatus === 'available_soon'
-                            ? 'bg-yellow-600 text-white'
-                            : 'bg-red-600 text-white'
-                      }`}
-                    >
-                      {persona.availabilityStatus === 'available'
-                        ? 'Available'
-                        : persona.availabilityStatus === 'available_soon'
-                          ? 'Available Soon'
-                          : 'Unavailable'}
-                    </div>
-                  </div>
-
-                  {/* Persona Info */}
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold text-ponte-text mb-1">
-                      {persona.name}
-                    </h3>
-                    <p className="text-sm text-ponte-textMuted mb-2">
-                      {persona.category}
-                    </p>
-                    <p className="text-xs text-ponte-textLight mb-3">
-                      {persona.bookings} bookings • $
-                      {persona.priceRange.min.toLocaleString()} - $
-                      {persona.priceRange.max.toLocaleString()}
-                    </p>
-                    <p className="text-sm text-ponte-text line-clamp-2">
-                      {persona.description}
-                    </p>
-                  </div>
-                </div>
+              <div key={persona.id} className="w-full flex-shrink-0 px-4">
+                <PersonaCard
+                  persona={persona}
+                  isSelected={selectedPersonaId === persona.id}
+                  onPersonaClick={handlePersonaClick}
+                />
               </div>
             ))}
           </div>
