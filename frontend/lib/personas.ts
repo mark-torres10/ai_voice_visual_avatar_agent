@@ -140,6 +140,8 @@ export const personas: Persona[] = [
 export const filterOptions = {
   categories: [
     'Voice Actor',
+    'Actor, ex-athlete',
+    'Athlete',
     'Tech Influencer',
     'Celebrity Chef',
     'Professional Athlete',
