@@ -19,8 +19,8 @@ export interface Persona {
 export const personas: Persona[] = [
   {
     id: 'persona-a',
-    name: 'Sarah Chen',
-    category: 'Voice Actor',
+    name: 'Terry Crews',
+    category: 'Actor, ex-athlete',
     rating: 4.8,
     bookings: 1250,
     priceRange: {
@@ -38,12 +38,12 @@ export const personas: Persona[] = [
     isAvailable: true,
     availabilityStatus: 'available',
     description:
-      'Professional voice actor with extensive experience in product launches and training content.',
+      'Professional actor and former athlete with extensive experience in product launches and training content.',
   },
   {
     id: 'persona-b',
-    name: 'Marcus Rodriguez',
-    category: 'Voice Actor',
+    name: 'Will Howard',
+    category: 'Athlete',
     rating: 4.9,
     bookings: 890,
     priceRange: {
@@ -61,7 +61,7 @@ export const personas: Persona[] = [
     isAvailable: true,
     availabilityStatus: 'available',
     description:
-      'Experienced voice actor specializing in food and cooking related content.',
+      'Professional athlete specializing in food and cooking related content.',
   },
   {
     id: 'persona-c',
@@ -76,8 +76,7 @@ export const personas: Persona[] = [
     expertise: ['Tech Reviews', 'Product Demos', 'Startup Pitches'],
     images: ['/generic_secretary_stock_image.jpg', '/personal_picture.jpg'],
     isAvailable: false,
-    availabilityStatus: 'available_soon',
-    availabilityDate: '2024-02-15',
+    availabilityStatus: 'unavailable',
     description:
       'Tech influencer with 2M+ followers specializing in AI, startups, and product reviews.',
   },
@@ -93,8 +92,8 @@ export const personas: Persona[] = [
     },
     expertise: ['Cooking Shows', 'Recipe Videos', 'Food Branding'],
     images: ['/generic_secretary_stock_image.jpg', '/personal_picture.jpg'],
-    isAvailable: true,
-    availabilityStatus: 'available',
+    isAvailable: false,
+    availabilityStatus: 'unavailable',
     description:
       'Celebrity chef known for fusion cuisine and engaging cooking demonstrations.',
   },
@@ -132,8 +131,7 @@ export const personas: Persona[] = [
     expertise: ['Educational Content', 'Interview Hosting', 'Storytelling'],
     images: ['/generic_secretary_stock_image.jpg', '/personal_picture.jpg'],
     isAvailable: false,
-    availabilityStatus: 'available_soon',
-    availabilityDate: '2024-01-30',
+    availabilityStatus: 'unavailable',
     description:
       'Award-winning podcast host specializing in educational and interview content.',
   },
@@ -142,6 +140,8 @@ export const personas: Persona[] = [
 export const filterOptions = {
   categories: [
     'Voice Actor',
+    'Actor, ex-athlete',
+    'Athlete',
     'Tech Influencer',
     'Celebrity Chef',
     'Professional Athlete',
