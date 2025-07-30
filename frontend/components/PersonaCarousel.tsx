@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { personas, Persona } from '@/lib/personas';
+import { PersonaCard } from './persona';
 
 interface PersonaCarouselProps {
   onPersonaSelect?: (persona: Persona) => void;
@@ -13,25 +14,32 @@ export default function PersonaCarousel({
   selectedPersonaId,
 }: PersonaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const cardsPerView = 4; // Show 4 cards at once
+  const totalSlides = Math.ceil(personas.length / cardsPerView);
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === personas.length - 1 ? 0 : prevIndex + 1
+      prevIndex === totalSlides - 1 ? 0 : prevIndex + 1
     );
   };
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? personas.length - 1 : prevIndex - 1
+      prevIndex === 0 ? totalSlides - 1 : prevIndex - 1
     );
   };
 
-  const handlePersonaClick = (persona: Persona) => {
+  const handlePersonaSelect = (persona: Persona) => {
     onPersonaSelect?.(persona);
   };
 
+  const getCurrentPersonas = () => {
+    const startIndex = currentIndex * cardsPerView;
+    return personas.slice(startIndex, startIndex + cardsPerView);
+  };
+
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto">
       <h2 className="text-xl font-semibold mb-4 text-center text-ponte-text">
         Choose Your AI Avatar
       </h2>
@@ -80,74 +88,15 @@ export default function PersonaCarousel({
 
         {/* Carousel Container */}
         <div className="overflow-hidden rounded-lg">
-          <div
-            className="flex transition-transform duration-300 ease-in-out"
-            style={{
-              transform: `translateX(-${currentIndex * 100}%)`,
-            }}
-          >
-            {personas.map((persona) => (
-              <div
-                key={persona.id}
-                className="w-full flex-shrink-0 px-4"
-                onClick={() => handlePersonaClick(persona)}
-              >
-                <div
-                  className={`bg-ponte-secondary rounded-lg shadow-lg p-6 cursor-pointer transition-all duration-200 hover:shadow-xl ${
-                    selectedPersonaId === persona.id
-                      ? 'ring-2 ring-ponte-accent shadow-xl'
-                      : ''
-                  }`}
-                >
-                  {/* Persona Image */}
-                  <div className="relative mb-4">
-                    <img
-                      src={persona.images[0]}
-                      alt={persona.name}
-                      className="w-full h-48 object-cover rounded-lg"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/generic_secretary_stock_image.jpg';
-                      }}
-                    />
-                    <div className="absolute top-2 right-2 bg-ponte-backgroundLight rounded-full px-2 py-1 text-sm font-medium text-ponte-yellow">
-                      ⭐ {persona.rating}
-                    </div>
-                    <div
-                      className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium ${
-                        persona.availabilityStatus === 'available'
-                          ? 'bg-green-600 text-white'
-                          : persona.availabilityStatus === 'available_soon'
-                            ? 'bg-yellow-600 text-white'
-                            : 'bg-red-600 text-white'
-                      }`}
-                    >
-                      {persona.availabilityStatus === 'available'
-                        ? 'Available'
-                        : persona.availabilityStatus === 'available_soon'
-                          ? 'Available Soon'
-                          : 'Unavailable'}
-                    </div>
-                  </div>
-
-                  {/* Persona Info */}
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold text-ponte-text mb-1">
-                      {persona.name}
-                    </h3>
-                    <p className="text-sm text-ponte-textMuted mb-2">
-                      {persona.category}
-                    </p>
-                    <p className="text-xs text-ponte-textLight mb-3">
-                      {persona.bookings} bookings • $
-                      {persona.priceRange.min.toLocaleString()} - $
-                      {persona.priceRange.max.toLocaleString()}
-                    </p>
-                    <p className="text-sm text-ponte-text line-clamp-2">
-                      {persona.description}
-                    </p>
-                  </div>
-                </div>
+          <div className="grid grid-cols-4 gap-4 px-4">
+            {getCurrentPersonas().map((persona) => (
+              <div key={persona.id} className="w-full">
+                <PersonaCard
+                  persona={persona}
+                  isSelected={selectedPersonaId === persona.id}
+                  onSelect={handlePersonaSelect}
+                  className="w-full h-96" // Fixed height for consistent card sizing
+                />
               </div>
             ))}
           </div>
@@ -155,7 +104,7 @@ export default function PersonaCarousel({
 
         {/* Dots Indicator */}
         <div className="flex justify-center mt-4 space-x-2">
-          {personas.map((_, index) => (
+          {Array.from({ length: totalSlides }, (_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
